@@ -1,4 +1,4 @@
-const { readdir, mkdir, rmdir, copyFile } = require('fs/promises');
+const { readdir, mkdir, rm, copyFile } = require('fs/promises');
 const fs = require('fs');
 const path = require('path');
 
@@ -12,7 +12,7 @@ let wStream;
 let stylesArr = [];
 
 const reDir = async () => {
-    await rmdir(distPath, { recursive: true });
+    await rm(distPath, { force: true, recursive: true });
     await mkdir(distPath, { recursive: true });
     wStream = fs.createWriteStream(distFile);
 }
@@ -51,22 +51,20 @@ const getFilesInDir = async (srcPath, distAssetsPath) => {
     await mkdir(distAssetsPath, { recursive: true });
     const dirEntts = await readdir(srcPath, { withFileTypes: true, });
     dirEntts.forEach(entity => {
-        if (entity.isFile()) copyFiles(entity.name, srcPath, distAssetsPath);
+        if (entity.isFile()) {
+            const fileFrom = path.resolve(srcPath, entity.name);
+            const fileTo = path.resolve(distAssetsPath, entity.name);;
+            copyFile(fileFrom, fileTo, null, (err) => {
+                if (err) throw err;
+            });
+        }
         else if (entity.isDirectory) {
             const nextSrcPath = path.resolve(srcPath, entity.name);
             const nextDistAssetsPath = path.resolve(distAssetsPath, entity.name);
             getFilesInDir(nextSrcPath, nextDistAssetsPath);
         }
     });
-}
-
-const copyFiles = async (fileFullName, srcPath, distAssetsPath) => {
-    const fileFrom = path.resolve(srcPath, fileFullName);
-    const fileTo = path.resolve(distAssetsPath, fileFullName);;
-    await copyFile(fileFrom, fileTo, null, (err) => {
-        if (err) throw err;
-    });
-}
+};
 
 const readTemplate = async () => {
     let template = '';
