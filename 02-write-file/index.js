@@ -12,7 +12,7 @@ const filePath = path.resolve(__dirname, 'text.txt');
 
 fs.open(filePath, 'w', (err) => {
     if (err) throw err;
-    console.log('Введите текст: ');
+    console.log('Введите текст (или "exit", чтобы завершить работу): ');
     rl.prompt();
 });
 
@@ -31,6 +31,6 @@ rl.addListener('line', (data) => {
 });
 
 rl.addListener('SIGINT', () => {
-    console.log('Ctrl + C');
+    console.log('\x1b[31m%s\x1b[0m', 'Ctrl + C');
     execExit();
 })
