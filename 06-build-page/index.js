@@ -58,7 +58,7 @@ const getFilesInDir = async (srcPath, distAssetsPath) => {
                 if (err) throw err;
             });
         }
-        else if (entity.isDirectory) {
+        else if (entity.isDirectory()) {
             const nextSrcPath = path.resolve(srcPath, entity.name);
             const nextDistAssetsPath = path.resolve(distAssetsPath, entity.name);
             getFilesInDir(nextSrcPath, nextDistAssetsPath);
