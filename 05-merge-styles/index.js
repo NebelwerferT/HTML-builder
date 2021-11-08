@@ -11,8 +11,8 @@ let wStream = fs.createWriteStream(distFile);
 let stylesArr = [];
 
 const getCssFiles = async () => {
-    let files = await readdir(srcDir);
-    files = files.filter(file => (path.extname(file) === tgtExt));
+    let files = await readdir(srcDir, { withFileTypes: true, });
+    files = files.filter(file => (file.isFile() && path.extname(file.name) === tgtExt)).map(file => file.name);
     return files;
 }
 
