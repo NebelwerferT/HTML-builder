@@ -96,7 +96,7 @@ const replaceTemplateHTML = async (template, matching) => {
     return Promise.all(matching.map(match => new Promise((res, rej) => {
         let componentHTML = '';
         const componentPath = path.resolve(__dirname, 'components', `${match}.html`);
-        const reg = new RegExp(`\{\{${match}\}\}`);
+        const reg = new RegExp(`\{\{${match}\}\}`, 'g');
         const rStream = fs.createReadStream(componentPath);
         rStream.addListener('data', data => { componentHTML += data; });
         rStream.addListener('end', () => {
